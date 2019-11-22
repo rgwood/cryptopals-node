@@ -16,6 +16,7 @@ export function xorSingleCharacter(hexInput: string, char: string): string {
     return ret.toString();
 }
 
+// from Wikipedia, plus space
 let charFrequencyMap = new Map<string, number>();
 charFrequencyMap.set('a', 	8.167); 	
 charFrequencyMap.set('b', 	1.492); 	
