@@ -2,37 +2,41 @@ import {assert} from 'chai';
 import readline from 'readline';
 import fs from 'fs';
 
-let rl = readline.createInterface({
-    input: fs.createReadStream('resources/1.4.txt')
-});
-
 type LineScore = {
     score: number;
     char: string;
     decodedString: string;
 };
 
-let topScores = new Array<LineScore>();
+function main() {
+    let rl = readline.createInterface({
+        input: fs.createReadStream('resources/1.4.txt')
+    });
+    
+    let topScores = new Array<LineScore>();
+    
+    rl.on("line", (line) => {
+        let lineBytes = Buffer.from(line, "hex");
+        let top = topScoringAsciiChar(lineBytes);
+        topScores.push(top);
+    });
+    
+    rl.on("close", () => {
+        console.log('done reading');
+        let topTopScore = topScores.sort((a, b) => b.score - a.score)[0];
+        console.log(topTopScore);
+    });
+}
 
-rl.on("line", (line) => {
-    let top = topScoringAsciiChar(line);
-    topScores.push(top);
-});
+// main();
 
-rl.on("close", () => {
-    console.log('done reading');
-    let topTopScore = topScores.sort((a, b) => b.score - a.score)[0];
-    console.log(topTopScore);
-});
-
-function xorSingleCharacter(hexInput: string, char: string): string {
-    let b1 = Buffer.from(hexInput, "hex");
-    let ret = Buffer.alloc(b1.length);
+function xorSingleCharacter(input: Buffer, char: string): string {
+    let ret = Buffer.alloc(input.length);
 
     let charAsByte = Buffer.from(char)[0];
 
-    for (let i = 0; i < b1.length; i++) {
-        let xoredByte = b1[i] ^ charAsByte;
+    for (let i = 0; i < input.length; i++) {
+        let xoredByte = input[i] ^ charAsByte;
         ret[i] = xoredByte;
     }
 
@@ -74,7 +78,7 @@ function scoreString(s: string): number {
     
     for(let i = 0; i < s.length; i++) {
         let char = s.charAt(i).toLowerCase();
-        ret += charFrequencyMap.get(char) || -1;
+        ret += charFrequencyMap.get(char) || -10;
     }
     return ret;
 }
@@ -88,14 +92,13 @@ function allAsciiChars() {
     return ret;
 }
 
-function topScoringAsciiChar(encodedString: string){
+export function topScoringAsciiChar(encodedString: Buffer){
     let asciiChars = allAsciiChars();
     let scores = new Map<string, number>();
     asciiChars.forEach(c => {
         let xored = xorSingleCharacter(encodedString, c);
         let score = scoreString(xored);
         scores.set(c, score);
-        
     });
 
     // Sorting is a common pain point for me in JS. Can I make it easier?
