@@ -1,9 +1,10 @@
 import {assert} from 'chai';
 import {readFileSync} from 'fs';
+
 import {createDecipheriv, randomBytes} from 'crypto';
 const key = "YELLOW SUBMARINE";
 
-let fileContents = Buffer.from(readFileSync('resources/1.7.txt').toString(), "base64");
+let fileContents = Buffer.from(readFileSync('resources/1.7.txt', "utf-8"), "base64");
 
 let decipher = createDecipheriv("aes-128-ecb", key, null);
 let decrypted = ''

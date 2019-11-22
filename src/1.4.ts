@@ -1,6 +1,5 @@
 import {assert} from 'chai';
-import readline from 'readline';
-import fs from 'fs';
+import fs, { readFileSync } from 'fs';
 
 type LineScore = {
     score: number;
@@ -9,26 +8,18 @@ type LineScore = {
 };
 
 function main() {
-    let rl = readline.createInterface({
-        input: fs.createReadStream('resources/1.4.txt')
-    });
-    
     let topScores = new Array<LineScore>();
-    
-    rl.on("line", (line) => {
-        let lineBytes = Buffer.from(line, "hex");
-        let top = topScoringAsciiChar(lineBytes);
-        topScores.push(top);
-    });
-    
-    rl.on("close", () => {
-        console.log('done reading');
-        let topTopScore = topScores.sort((a, b) => b.score - a.score)[0];
-        console.log(topTopScore);
-    });
-}
+    let lines = readFileSync('resources/1.4.txt', "utf-8").split("\n").map(l => Buffer.from(l, "hex"));
 
-// main();
+    for (const line of lines) {
+        let top = topScoringAsciiChar(line);
+        topScores.push(top);
+    }
+
+    console.log('done reading');
+    let topTopScore = topScores.sort((a, b) => b.score - a.score)[0];
+    console.log(topTopScore);
+}
 
 function xorSingleCharacter(input: Buffer, char: string): string {
     let ret = Buffer.alloc(input.length);
@@ -107,4 +98,4 @@ export function topScoringAsciiChar(encodedString: Buffer){
     return {score: top[1], char: top[0], decodedString: xorSingleCharacter(encodedString, top[0])}
 }
 
-
+main();

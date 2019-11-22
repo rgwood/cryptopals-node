@@ -60,8 +60,7 @@ assert.equal(editDistanceString("this is a test","wokka wokka!!!"), 37);
 assert.equal(editDistanceBuffer(Buffer.alloc(10), Buffer.alloc(10)), 0);
 assert.equal(editDistanceBuffer(Buffer.from("01", "hex"), Buffer.from("02", "hex")), 2);
 
-// this seems kinda horrible, is there a better way?
-let fileContents = Buffer.from(readFileSync('resources/1.6.txt').toString(), "base64");
+let fileContents = Buffer.from(readFileSync('resources/1.6.txt', "utf-8"), "base64");
 console.log('file:')
 console.log(fileContents);
 
