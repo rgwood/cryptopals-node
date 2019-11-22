@@ -12,10 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chai": "^4.2.0"
+    "chai": "^4.2.0",
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "@types/chai": "^4.2.5",
+    "@types/lodash": "^4.14.149",
     "@types/node": "^12.12.11",
     "nodemon": "^2.0.0",
     "ts-node": "^8.5.2",
